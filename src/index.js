@@ -46,16 +46,16 @@ async function startServer() {
   const PORT = process.env.PORT || 5000;
   const GRAPHQL_PORT = process.env.GRAPHQL_PORT || 4000;
 
-  // Start Express REST API
-  app.listen(PORT, () => {
-    console.log(`REST API running on http://localhost:${PORT}/api`);
+  // Start Express REST API (PUBLIC)
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`REST API running on http://0.0.0.0:${PORT}/api`);
   });
 
-  // Apollo GraphQL Server (standalone)
+  // Apollo GraphQL Server (PUBLIC)
   const apolloServer = new ApolloServer({ typeDefs, resolvers });
-  
+
   const { url } = await startStandaloneServer(apolloServer, {
-    listen: { port: GRAPHQL_PORT },
+    listen: { port: GRAPHQL_PORT, host: "0.0.0.0" },
     context: async ({ req }) => {
       const token = req.headers.authorization?.replace('Bearer ', '');
       let user = null;
